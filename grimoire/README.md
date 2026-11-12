@@ -25,6 +25,20 @@ Open your link once while you have internet, then:
 
 Open it from the home-screen icon, tap **Add**, and pick your songs. From then on it works offline.
 
+## What's in V2
+
+- **Design your own albums and libraries (grimoires):** name, description, theme colour and your own cover image. Albums from your files can get a colour and cover too.
+- **Cinematic player with synced lyrics:** lyrics come from LRCLIB (a free database of timed lyrics). They're fetched once while you're online and kept for offline. Fine-tune the timing with **− / +**, tap **Sync** to time any song yourself, paste lyrics, or add `.lrc` files with the same name as the song.
+- **Every artist listed,** featured artists included.
+- **Moving covers** for music videos (MP4), made from the video itself.
+- **Page-turn song changes:** swipe the cover to flick songs. Turn the Black Clover theme on/off in Settings.
+- **Mini player:** the player shrinks into the mini player; on a computer you can pop it out to stay on top.
+- **Share to Grimoire (Android):** share music files from other apps straight into Grimoire.
+
+## Updates
+
+Grimoire updates itself. New versions go to this GitHub repository; the next time you open the app with internet it loads the new version. Your music, albums and lyrics stay on your device and are not affected.
+
 ## Good to know
 
 - Music is stored per device and per browser. Songs added on your laptop don't appear on your phone; add them on each one.

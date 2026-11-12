@@ -1,6 +1,6 @@
 /* Grimoire service worker: keeps the app itself available offline.
    Your music is stored separately in the browser's IndexedDB, so it is never touched by this cache. */
-const VERSION = 'grimoire-v1';
+const VERSION = 'grimoire-v2';
 const FONT_CACHE = 'grimoire-fonts';
 const SHELL = [
   './',
@@ -25,10 +25,32 @@ self.addEventListener('activate', event => {
   );
 });
 
+// "Share to Grimoire" (Android): files shared from other apps arrive here as a POST
+async function saveShared(files) {
+  const db = await new Promise((res, rej) => {
+    const r = indexedDB.open('grimoire-share', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('files', { autoIncrement: true });
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+  await new Promise((res, rej) => {
+    const tx = db.transaction('files', 'readwrite'); const st = tx.objectStore('files');
+    files.forEach(f => st.add({ name: f.name, type: f.type, blob: f }));
+    tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+  });
+  db.close();
+}
+
 self.addEventListener('fetch', event => {
   const req = event.request;
-  if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  if (req.method === 'POST' && url.pathname.endsWith('/share-target')) {
+    event.respondWith((async () => {
+      try { const fd = await req.formData(); await saveShared(fd.getAll('media').filter(f => f && f.size)); } catch (e) {}
+      return Response.redirect(new URL('./?shared=1', self.registration.scope).href, 303);
+    })());
+    return;
+  }
+  if (req.method !== 'GET') return;
 
   // Google Fonts: serve from cache, refresh in the background
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
